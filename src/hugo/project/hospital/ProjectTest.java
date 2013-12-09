@@ -2,6 +2,7 @@ package hugo.project.hospital;
 
 import hugo.project.hospital.Hospital.Patient;
 import hugo.util.structure.EdgeGraph;
+import hugo.util.structure.LinkedList;
 
 public class ProjectTest {
 
@@ -21,22 +22,27 @@ public class ProjectTest {
 		Patient p12 = hospital.new Patient("p12", 1, true);
 		Patient p13 = hospital.new Patient("p13", 1, true);
 		Patient p14 = hospital.new Patient("p14", 1, true);
-//		hospital.signInPatientToDepartment(p1, "Neurology");
-//		hospital.signInPatientToDepartment(p2, "Neurology");
-//		hospital.signInPatientToDepartment(p3, "Neurology");
-//		hospital.signInPatientToDepartment(p4, "Neurology");
-//		hospital.signInPatientToDepartment(p5, "Neurology");
-//		hospital.signInPatientToDepartment(p6, "Neurology");
-//		hospital.signInPatientToDepartment(p7, "Neurology");
-//		hospital.signInPatientToDepartment(p8, "Neurology");
-//		hospital.signInPatientToDepartment(p9, "Neurology");
-//		hospital.signInPatientToDepartment(p10, "Neurology");
-//		hospital.signInPatientToDepartment(p14, "Cardiology");
-//		hospital.signInPatientToDepartment(p11, "Neurology");
-//		hospital.signInPatientToDepartment(p12, "Neurology");
-//		hospital.signInPatientToDepartment(p13, "Neurology");
-//		System.out.println(hospital);
+		hospital.signInPatientToDepartment(p1, "Neurology");
+		hospital.signInPatientToDepartment(p2, "Neurology");
+		hospital.signInPatientToDepartment(p3, "Neurology");
+		hospital.signInPatientToDepartment(p4, "Neurology");
+		hospital.signInPatientToDepartment(p5, "Neurology");
+		hospital.signInPatientToDepartment(p6, "Neurology");
+		hospital.signInPatientToDepartment(p7, "Neurology");
+		hospital.signInPatientToDepartment(p8, "Neurology");
+		hospital.signInPatientToDepartment(p9, "Neurology");
+		hospital.signInPatientToDepartment(p10, "Neurology");
+		hospital.signInPatientToDepartment(p14, "Cardiology");
+		hospital.signInPatientToDepartment(p11, "Neurology");
+		hospital.signInPatientToDepartment(p12, "Neurology");
+		hospital.signInPatientToDepartment(p13, "Neurology");
+		System.out.println(hospital);
 		System.out.println(hospital.departmentMap.show());
+		
+		hospital.printRouteFromTo("Neurology", "Radiotherapy");
+		hospital.printRouteFromTo("Neurology", "Oncology");
+		hospital.printRouteFromToAvoiding("Neurology", "Radiotherapy", "Oncology");
+		hospital.printRouteFromToAvoiding("Neurology", "Radiotherapy", "Cardiology");
 		
 //		EdgeGraph<Patient> graph = new EdgeGraph<Hospital.Patient>();
 //		graph.addNode(p1);
@@ -46,8 +52,13 @@ public class ProjectTest {
 //		graph.addEdge(p1, p2);
 //		graph.addEdge(p1, p3);
 //		graph.addEdge(p2, p3);
+//		graph.addEdge(p2, p4);
 //		graph.addEdge(p3, p1);
 //		System.out.println(graph.show());
+//		LinkedList<Patient> path = graph.findPath(p1, p4);
+//		for (Patient patient : path) {
+//			System.out.println(patient.toString());
+//		}
 
 	}
 

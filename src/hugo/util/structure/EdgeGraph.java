@@ -6,10 +6,14 @@ public class EdgeGraph<E extends Comparable> {
 	protected class Node<E extends Comparable> implements Comparable<Node<E>> {
 		private E label;
 		private LinkedList<Edge<E>> edges;
+		private boolean visited;
+		private Node<E> previousNode;
 
 		public Node(E dataE) {
 			this.label = dataE;
 			edges = new LinkedList<Edge<E>>();
+			visited = false;
+			previousNode = null;
 		}
 		
 		public void addEdge(Edge<E> edge) {
@@ -66,6 +70,50 @@ public class EdgeGraph<E extends Comparable> {
 		Node<E> from = findNode(fromLabel);
 		Node<E> to = findNode(toLabel);
 		from.addEdge(new Edge<E>(to));
+	}
+	
+	public LinkedList<E> findPath(E fromE, E toE) {
+		return findPathAvoiding(fromE, toE, null);
+	}
+	
+	public LinkedList<E> findPathAvoiding(E fromE, E toE, E avoidE) {
+		clearState();
+
+		Node<E> fromNode = findNode(fromE);
+		Node<E> toNode = findNode(toE);
+		Node<E> avoidNode = findNode(avoidE);
+		if(avoidE != null) avoidNode.visited = true;
+		LinkedList<E> pathList = new LinkedList<E>();
+		Queue<Node<E>> toDoList = new Queue<Node<E>>();
+		toDoList.push(fromNode);
+		while (!toDoList.empty()) {
+			Node<E> currentNode = toDoList.pop();
+			if(currentNode.equals(toNode)) {
+				while(currentNode.previousNode != null) {
+					pathList.addFirst(currentNode.label);
+					currentNode = currentNode.previousNode;
+				}
+				return pathList;
+			}
+			else {
+				for (Edge<E> edge : currentNode.edges) {
+					if(!edge.toNode.visited) {
+						edge.toNode.previousNode = currentNode;
+						toDoList.push(edge.toNode);
+					}
+				}
+				currentNode.visited = true;
+			}
+		}
+		return null;
+	}
+	
+	
+	public void clearState() {
+		for (Node<E> node : nodes) {
+			node.visited = false;
+			node.previousNode = null;
+		}
 	}
 	
 	public String show() {

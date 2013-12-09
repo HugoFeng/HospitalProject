@@ -432,6 +432,48 @@ public class Hospital {
 		reception.removePatientInfo(info);
 	}
 	
+	public void printRouteFromTo(String fromDepartment, String toDepartment) {
+		LinkedList<Department> path = departmentMap.findPath(
+				getDepartmentByName(fromDepartment), 
+				getDepartmentByName(toDepartment));
+		if (path == null) {
+			System.out.println("Route from " + fromDepartment + " to " + toDepartment + " not found!");
+			return;
+		} else {
+			String outputString = "Path from " + fromDepartment + " to " + toDepartment + ":\n"
+					+ "\t" + fromDepartment;
+			for (Department department : path) {
+				outputString += " >> " + department.toString();
+			}
+			System.out.println(outputString);
+		}
+	}
+	
+	public void printRouteFromToAvoiding(
+			String fromDepartment, String toDepartment, String avoidDepartment) {
+		LinkedList<Department> path = departmentMap.findPathAvoiding(
+				getDepartmentByName(fromDepartment), 
+				getDepartmentByName(toDepartment),
+				getDepartmentByName(avoidDepartment)); 
+		if (path == null) {
+			System.out.println("Route from " + fromDepartment 
+					+ " to " + toDepartment 
+					+ " avoiding " + avoidDepartment
+					+ " not found!");
+			return;
+		} else {
+			String outputString = "Path from " + fromDepartment
+					+ " to " + toDepartment 
+					+ " avoiding " + avoidDepartment + ":\n"
+					+ "\t" + fromDepartment;
+			for (Department department : path) {
+				outputString += " >> " + department.toString();
+			}
+			System.out.println(outputString);
+		}
+	}
+	
+	
 	public String showRegister() {
 		return reception.show();
 	}
