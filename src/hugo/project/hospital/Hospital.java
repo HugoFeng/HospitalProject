@@ -3,6 +3,7 @@ package hugo.project.hospital;
 import hugo.project.hospital.Hospital.Department.Room;
 import hugo.project.hospital.Hospital.Reception.PatientInfo;
 import hugo.util.structure.DoubleLinkedList;
+import hugo.util.structure.EdgeGraph;
 import hugo.util.structure.LinkedList;
 import hugo.util.structure.PriorityQueue;
 
@@ -320,14 +321,88 @@ public class Hospital {
 		}
 	}
 	
+	protected class RadiologyDepartment extends Department {
+		public RadiologyDepartment() {
+			name = "Radiology";
+			waitingRoom = new WaitingRoom("WR " + name);
+			wards = new DoubleLinkedList<Ward>();
+			wards.addLast(new Ward(112, 3));
+			wards.addLast(new Ward(106, 3));
+			wards.addLast(new Ward(113, 2));
+			wards.addLast(new Ward(105, 1));
+		}
+	}
+	
+	protected class RadiotherapyDepartment extends Department {
+		public RadiotherapyDepartment() {
+			name = "Radiotherapy";
+			waitingRoom = new WaitingRoom("WR " + name);
+			wards = new DoubleLinkedList<Ward>();
+			wards.addLast(new Ward(119, 3));
+			wards.addLast(new Ward(126, 3));
+			wards.addLast(new Ward(120, 2));
+			wards.addLast(new Ward(125, 1));
+		}
+	}
+	
+	protected class OncologyDepartment extends Department {
+		public OncologyDepartment() {
+			name = "Oncology";
+			waitingRoom = new WaitingRoom("WR " + name);
+			wards = new DoubleLinkedList<Ward>();
+			wards.addLast(new Ward(118, 3));
+			wards.addLast(new Ward(117, 2));
+			wards.addLast(new Ward(124, 1));
+			wards.addLast(new Ward(123, 1));
+		}
+	}
+	
+	protected class PhysiotherapyDepartment extends Department {
+		public PhysiotherapyDepartment() {
+			name = "Physiotherapy";
+			waitingRoom = new WaitingRoom("WR " + name);
+			wards = new DoubleLinkedList<Ward>();
+			wards.addLast(new Ward(116, 2));
+			wards.addLast(new Ward(115, 2));
+			wards.addLast(new Ward(114, 2));
+			wards.addLast(new Ward(122, 1));
+			wards.addLast(new Ward(121, 1));
+
+		}
+	}
+	
+	
 	protected LinkedList<Department> departmentList;
+	protected EdgeGraph<Department> departmentMap;
 	protected Reception reception;
 	
 	public Hospital() {
 		departmentList = new LinkedList<Hospital.Department>();
 		departmentList.addLast(new NeurologyDepartment());
 		departmentList.addLast(new CardiologyDepartment());
+		departmentList.addLast(new RadiologyDepartment());
+		departmentList.addLast(new RadiotherapyDepartment());
+		departmentList.addLast(new OncologyDepartment());
+		departmentList.addLast(new PhysiotherapyDepartment());
+
+		departmentMap = new EdgeGraph<Hospital.Department>();
 		reception = new Reception();
+
+		for (Department department : departmentList) {
+			departmentMap.addNode(department);
+		}
+		departmentMap.addEdge(getDepartmentByName("Neurology"), getDepartmentByName("Cardiology"));
+		departmentMap.addEdge(getDepartmentByName("Cardiology"), getDepartmentByName("Neurology"));
+		departmentMap.addEdge(getDepartmentByName("Cardiology"), getDepartmentByName("Oncology"));
+		departmentMap.addEdge(getDepartmentByName("Cardiology"), getDepartmentByName("Radiology"));
+		departmentMap.addEdge(getDepartmentByName("Radiology"), getDepartmentByName("Cardiology"));
+		departmentMap.addEdge(getDepartmentByName("Radiology"), getDepartmentByName("Radiotherapy"));
+		departmentMap.addEdge(getDepartmentByName("Radiotherapy"), getDepartmentByName("Radiology"));
+		departmentMap.addEdge(getDepartmentByName("Radiotherapy"), getDepartmentByName("Oncology"));
+		departmentMap.addEdge(getDepartmentByName("Oncology"), getDepartmentByName("Cardiology"));
+		departmentMap.addEdge(getDepartmentByName("Oncology"), getDepartmentByName("Radiotherapy"));
+		departmentMap.addEdge(getDepartmentByName("Oncology"), getDepartmentByName("Physiotherapy"));
+		departmentMap.addEdge(getDepartmentByName("Physiotherapy"), getDepartmentByName("Oncology"));
 	}
 	public Department getDepartmentByName(String depName) {
 		for (Department department : departmentList) {
