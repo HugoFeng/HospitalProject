@@ -473,6 +473,30 @@ public class Hospital {
 		}
 	}
 	
+	public void printRouteFromToVia(
+			String fromDepartment, String toDepartment, String viaDepartment) {
+		LinkedList<Department> path = departmentMap.findPathVia(
+				getDepartmentByName(fromDepartment), 
+				getDepartmentByName(toDepartment),
+				getDepartmentByName(viaDepartment)); 
+		if (path == null) {
+			System.out.println("Route from " + fromDepartment 
+					+ " to " + toDepartment 
+					+ " via " + viaDepartment
+					+ " not found!");
+			return;
+		} else {
+			String outputString = "Path from " + fromDepartment
+					+ " to " + toDepartment 
+					+ " via " + viaDepartment + ":\n"
+					+ "\t" + fromDepartment;
+			for (Department department : path) {
+				outputString += " >> " + department.toString();
+			}
+			System.out.println(outputString);
+		}
+	}
+	
 	
 	public String showRegister() {
 		return reception.show();

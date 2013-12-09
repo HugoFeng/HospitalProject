@@ -139,6 +139,17 @@ public class LinkedList<E extends Comparable> implements Iterable<E>{
 		}
 		return get(size() - 1);
 	}
+	
+	public void attachToFrontOf(LinkedList<E> leadingLinkedList) {
+		if(leadingLinkedList != null) {
+			ListElement element = head;
+			while (element.el2 != null) {
+				element = element.el2;
+			}
+			element.el2 = leadingLinkedList.head;
+			size += leadingLinkedList.size; //This is very dirty. Should return a new list!
+		}
+	}
 
 	public int size() {
 		return size;

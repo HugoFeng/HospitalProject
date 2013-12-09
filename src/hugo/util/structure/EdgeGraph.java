@@ -72,6 +72,14 @@ public class EdgeGraph<E extends Comparable> {
 		from.addEdge(new Edge<E>(to));
 	}
 	
+	public LinkedList<E> findPathVia(E fromE, E toE, E viaE) {
+		LinkedList<E> firstPath = findPath(fromE, viaE);
+		LinkedList<E> secondPath = findPath(viaE, toE);
+		if(firstPath==null || secondPath==null) return null;
+		firstPath.attachToFrontOf(secondPath);
+		return firstPath;
+	}
+	
 	public LinkedList<E> findPath(E fromE, E toE) {
 		return findPathAvoiding(fromE, toE, null);
 	}

@@ -1,8 +1,6 @@
 package hugo.project.hospital;
 
 import hugo.project.hospital.Hospital.Patient;
-import hugo.util.structure.EdgeGraph;
-import hugo.util.structure.LinkedList;
 
 public class ProjectTest {
 
@@ -43,6 +41,8 @@ public class ProjectTest {
 		hospital.printRouteFromTo("Neurology", "Oncology");
 		hospital.printRouteFromToAvoiding("Neurology", "Radiotherapy", "Oncology");
 		hospital.printRouteFromToAvoiding("Neurology", "Radiotherapy", "Cardiology");
+		hospital.printRouteFromToVia("Neurology", "Physiotherapy", "Radiology");
+		hospital.printRouteFromToVia("Neurology", "Physiotherapy", "Radiotherapy");
 		
 //		EdgeGraph<Patient> graph = new EdgeGraph<Hospital.Patient>();
 //		graph.addNode(p1);
