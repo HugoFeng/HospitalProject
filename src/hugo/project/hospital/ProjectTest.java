@@ -1,6 +1,7 @@
 package hugo.project.hospital;
 
 import hugo.project.hospital.Hospital.Patient;
+import hugo.util.structure.*;
 
 public class ProjectTest {
 
@@ -51,17 +52,26 @@ public class ProjectTest {
 //		graph.addNode(p2);
 //		graph.addNode(p3);
 //		graph.addNode(p4);
+//		graph.addNode(p5);
 //		graph.addEdge(p1, p2);
 //		graph.addEdge(p1, p3);
 //		graph.addEdge(p2, p3);
 //		graph.addEdge(p2, p4);
 //		graph.addEdge(p3, p1);
+//		graph.addEdge(p4, p5);
 //		System.out.println(graph.show());
-//		LinkedList<Patient> path = graph.findPath(p1, p4);
-//		for (Patient patient : path) {
-//			System.out.println(patient.toString());
+////		LinkedList<Patient> path = graph.findPath(p1, p4);
+////		for (Patient patient : path) {
+////			System.out.println(patient.toString());
+////		}
+//
+//		for (Patient patient : graph.bfsIteratFrom(p1)) {
+//			System.out.println(patient);
 //		}
-
+//		System.out.println();
+//		for (Patient patient : graph.dfsIteratFrom(p1)) {
+//			System.out.println(patient);
+//		}
 	}
 
 }

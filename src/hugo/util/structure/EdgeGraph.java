@@ -1,5 +1,7 @@
 package hugo.util.structure;
 
+import java.util.Iterator;
+
 @SuppressWarnings("rawtypes")
 public class EdgeGraph<E extends Comparable> {
 	@SuppressWarnings("hiding")
@@ -91,6 +93,7 @@ public class EdgeGraph<E extends Comparable> {
 		Node<E> toNode = findNode(toE);
 		Node<E> avoidNode = findNode(avoidE);
 		if(avoidE != null) avoidNode.visited = true;
+
 		LinkedList<E> pathList = new LinkedList<E>();
 		Queue<Node<E>> toDoList = new Queue<Node<E>>();
 		toDoList.push(fromNode);
@@ -135,4 +138,115 @@ public class EdgeGraph<E extends Comparable> {
 		}
 		return output;
 	}
+
+	public Iterable<E> bfsIteratFrom(E fromE) {
+		return new BfsIterable(fromE);
+	}
+	
+	private class BfsIterable implements Iterable<E>{
+
+		private E fromE;
+		public BfsIterable(E fromE) {
+			this.fromE = fromE;
+		}
+		
+		@Override
+		public Iterator<E> iterator() {
+			// TODO Auto-generated method stub
+			return new BfsIterator(fromE);
+		}
+		
+		private class BfsIterator implements Iterator<E> {
+			private Node<E> startNode;
+			private Queue<Node<E>> toDoQueue;
+			
+			public BfsIterator(E fromE) {
+				super();
+				startNode = findNode(fromE);
+				toDoQueue = new Queue<Node<E>>();
+				clearState();
+				toDoQueue.push(startNode);
+			}
+
+			@Override
+			public boolean hasNext() {
+				return !toDoQueue.empty();
+			}
+
+			@Override
+			public E next() {
+				Node<E> thisNode = toDoQueue.pop();
+				thisNode.visited = true;
+				for (Edge<E> edge : thisNode.edges) {
+					if(!edge.toNode.visited) toDoQueue.push(edge.toNode);
+				}
+				return thisNode.label;
+			}
+
+			@Override
+			public void remove() {
+				
+			}
+
+		}
+		
+	}
+	
+	public Iterable<E> dfsIteratFrom(E fromE) {
+		return new DfsIterable(fromE);
+	}
+	
+	private class DfsIterable implements Iterable<E> {
+		private E fromE;
+		public DfsIterable(E fromE) {
+			this.fromE = fromE;
+		}
+
+		@Override
+		public Iterator<E> iterator() {
+			// TODO Auto-generated method stub
+			return new DfsIterator(fromE);
+		}
+		
+		private class DfsIterator implements Iterator<E> {
+			
+			private Node<E> startNode;
+			private Stack<Node<E>> toDoStack;
+			
+			public DfsIterator(E fromE) {
+				super();
+				startNode = findNode(fromE);
+				toDoStack = new Stack<Node<E>>();
+				clearState();
+				toDoStack.push(startNode);
+			}
+
+			@Override
+			public boolean hasNext() {
+				return !toDoStack.empty();
+			}
+
+			@Override
+			public E next() {
+				Node<E> thisNode = toDoStack.pop();
+				thisNode.visited = true;
+				for (Edge<E> edge : thisNode.edges) {
+					if(!edge.toNode.visited) {
+						toDoStack.push(edge.toNode);
+						edge.toNode.visited = true;
+					}
+				}
+				return thisNode.label;
+			}
+
+			@Override
+			public void remove() {
+				
+			}
+			
+		}
+		
+	}
+	
+	
 }
