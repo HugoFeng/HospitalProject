@@ -240,13 +240,24 @@ public class Hospital {
 		
 		protected String name;
 		protected WaitingRoom waitingRoom;
-		protected DoubleLinkedList<Ward> wards;
+		protected DoubleLinkedList<Ward> wardsForSingle;
+		protected DoubleLinkedList<Ward> wardsForMulti;
 		
-		public boolean isFull() {
-			for (Ward room : wards) {
+		public boolean isForMultiFull() {
+			for (Ward room : wardsForMulti) {
 				if(!room.isFull()) return false;
 			}
 			return true;
+		}
+		public boolean isForSingleFull() {
+			for (Ward room : wardsForSingle) {
+				if(!room.isFull()) return false;
+			}
+			return true;
+		}
+		public boolean isFull() {
+			if(isForMultiFull() && isForSingleFull()) return true;
+			return false;
 		}
 		
 		public void addPatient(Patient p) {
@@ -254,11 +265,51 @@ public class Hospital {
 				waitingRoom.addWaitingPatient(p);
 				reception.addPatientInfo(p, this, waitingRoom);
 			} else {
-				for (Ward room : (p.wantsSingleRoom()?wards.reversedIterator():wards)) {
+				for (Ward room : (p.wantsSingleRoom()?wardsForSingle:wardsForMulti)) {
 					if(!room.isFull()) {
 						room.addPatient(p);
 						reception.addPatientInfo(p, this, room);
 						return;
+					}
+				}
+			}
+		}
+		
+		protected void addPatientFromWaitingRoom() {
+			// return if waiting room is empty
+			if(waitingRoom.noOneWaiting()) return;
+			// Iterate the waiting list until find a person with the ward desired available
+			for (Patient patient : waitingRoom.waitingList) {
+				// If this patient only want ward for single
+				if (patient.wantsSingleRoom && !isForSingleFull()) {
+					for (Ward singleWard : wardsForSingle) {
+						if (!singleWard.isFull()) {
+							singleWard.addPatient(patient);
+							reception.addPatientInfo(patient, this, singleWard);
+							waitingRoom.waitingList.remove(patient);
+							return;
+						}
+					}
+				}
+				// If this patient don't care
+				if (!patient.wantsSingleRoom && !isFull()) {
+					// First find a ward for multi
+					for (Ward multiWard : wardsForMulti) {
+						if (!multiWard.isFull()) {
+							multiWard.addPatient(patient);
+							reception.addPatientInfo(patient, this, multiWard);
+							waitingRoom.waitingList.remove(patient);
+							return;
+						}
+					}
+					// If none available, find a ward for single
+					for (Ward singleWard : wardsForSingle) {
+						if (!singleWard.isFull()) {
+							singleWard.addPatient(patient);
+							reception.addPatientInfo(patient, this, singleWard);
+							waitingRoom.waitingList.remove(patient);
+							return;
+						}
 					}
 				}
 			}
@@ -268,7 +319,7 @@ public class Hospital {
 		public void signOutPatient(PatientInfo info) {
 			Room room = info.getRoom();
 			room.removePatient(info.getPatient());
-			if(!waitingRoom.noOneWaiting()) addPatient(waitingRoom.popWaitingPatient());
+			if(!waitingRoom.noOneWaiting()) addPatientFromWaitingRoom();
 		}
 		
 		public void signOutPatient(Patient p) {
@@ -285,7 +336,10 @@ public class Hospital {
 		
 		public String info() {
 			String roomInfoListString = "";
-			for (Ward room : wards) {
+			for (Ward room : wardsForSingle) {
+				roomInfoListString += room.info();
+			}
+			for (Ward room : wardsForMulti) {
 				roomInfoListString += room.info();
 			}
 			return this.toString() +":\n" 
@@ -298,12 +352,13 @@ public class Hospital {
 		public NeurologyDepartment() {
 			name = "Neurology";
 			waitingRoom = new WaitingRoom("WR " + name);
-			wards = new DoubleLinkedList<Ward>();
-			wards.addLast(new Ward(107, 2));
-			wards.addLast(new Ward(108, 2));
-			wards.addLast(new Ward(109, 2));
-			wards.addLast(new Ward(101, 1));
-			wards.addLast(new Ward(102, 1));
+			wardsForMulti = new DoubleLinkedList<Ward>();
+			wardsForSingle = new DoubleLinkedList<Ward>();
+			wardsForMulti.addLast(new Ward(107, 2));
+			wardsForMulti.addLast(new Ward(108, 2));
+			wardsForMulti.addLast(new Ward(109, 2));
+			wardsForSingle.addLast(new Ward(101, 1));
+			wardsForSingle.addLast(new Ward(102, 1));
 
 		}
 	}
@@ -312,11 +367,12 @@ public class Hospital {
 		public CardiologyDepartment() {
 			name = "Cardiology";
 			waitingRoom = new WaitingRoom("WR " + name);
-			wards = new DoubleLinkedList<Ward>();
-			wards.addLast(new Ward(111, 3));
-			wards.addLast(new Ward(110, 2));
-			wards.addLast(new Ward(103, 1));
-			wards.addLast(new Ward(104, 1));
+			wardsForMulti = new DoubleLinkedList<Ward>();
+			wardsForSingle = new DoubleLinkedList<Ward>();
+			wardsForMulti.addLast(new Ward(111, 3));
+			wardsForMulti.addLast(new Ward(110, 2));
+			wardsForSingle.addLast(new Ward(103, 1));
+			wardsForSingle.addLast(new Ward(104, 1));
 
 		}
 	}
@@ -325,11 +381,12 @@ public class Hospital {
 		public RadiologyDepartment() {
 			name = "Radiology";
 			waitingRoom = new WaitingRoom("WR " + name);
-			wards = new DoubleLinkedList<Ward>();
-			wards.addLast(new Ward(112, 3));
-			wards.addLast(new Ward(106, 3));
-			wards.addLast(new Ward(113, 2));
-			wards.addLast(new Ward(105, 1));
+			wardsForMulti = new DoubleLinkedList<Ward>();
+			wardsForSingle = new DoubleLinkedList<Ward>();
+			wardsForMulti.addLast(new Ward(112, 3));
+			wardsForMulti.addLast(new Ward(106, 3));
+			wardsForMulti.addLast(new Ward(113, 2));
+			wardsForSingle.addLast(new Ward(105, 1));
 		}
 	}
 	
@@ -337,11 +394,12 @@ public class Hospital {
 		public RadiotherapyDepartment() {
 			name = "Radiotherapy";
 			waitingRoom = new WaitingRoom("WR " + name);
-			wards = new DoubleLinkedList<Ward>();
-			wards.addLast(new Ward(119, 3));
-			wards.addLast(new Ward(126, 3));
-			wards.addLast(new Ward(120, 2));
-			wards.addLast(new Ward(125, 1));
+			wardsForMulti = new DoubleLinkedList<Ward>();
+			wardsForSingle = new DoubleLinkedList<Ward>();
+			wardsForMulti.addLast(new Ward(119, 3));
+			wardsForMulti.addLast(new Ward(126, 3));
+			wardsForMulti.addLast(new Ward(120, 2));
+			wardsForSingle.addLast(new Ward(125, 1));
 		}
 	}
 	
@@ -349,11 +407,12 @@ public class Hospital {
 		public OncologyDepartment() {
 			name = "Oncology";
 			waitingRoom = new WaitingRoom("WR " + name);
-			wards = new DoubleLinkedList<Ward>();
-			wards.addLast(new Ward(118, 3));
-			wards.addLast(new Ward(117, 2));
-			wards.addLast(new Ward(124, 1));
-			wards.addLast(new Ward(123, 1));
+			wardsForMulti = new DoubleLinkedList<Ward>();
+			wardsForSingle = new DoubleLinkedList<Ward>();
+			wardsForMulti.addLast(new Ward(118, 3));
+			wardsForMulti.addLast(new Ward(117, 2));
+			wardsForSingle.addLast(new Ward(124, 1));
+			wardsForSingle.addLast(new Ward(123, 1));
 		}
 	}
 	
@@ -361,12 +420,13 @@ public class Hospital {
 		public PhysiotherapyDepartment() {
 			name = "Physiotherapy";
 			waitingRoom = new WaitingRoom("WR " + name);
-			wards = new DoubleLinkedList<Ward>();
-			wards.addLast(new Ward(116, 2));
-			wards.addLast(new Ward(115, 2));
-			wards.addLast(new Ward(114, 2));
-			wards.addLast(new Ward(122, 1));
-			wards.addLast(new Ward(121, 1));
+			wardsForMulti = new DoubleLinkedList<Ward>();
+			wardsForSingle = new DoubleLinkedList<Ward>();
+			wardsForMulti.addLast(new Ward(116, 2));
+			wardsForMulti.addLast(new Ward(115, 2));
+			wardsForMulti.addLast(new Ward(114, 2));
+			wardsForSingle.addLast(new Ward(122, 1));
+			wardsForSingle.addLast(new Ward(121, 1));
 
 		}
 	}

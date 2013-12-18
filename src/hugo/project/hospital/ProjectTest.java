@@ -14,8 +14,8 @@ public class ProjectTest {
 		Patient p6 = hospital.new Patient("p6", 1, true);
 		Patient p7 = hospital.new Patient("p7", 1, false);
 		Patient p8 = hospital.new Patient("p8", 2, false);
-		Patient p9 = hospital.new Patient("p9", 1, true);
-		Patient p10 = hospital.new Patient("p10", 3, false);
+		Patient p9 = hospital.new Patient("p9", 1, false);
+		Patient p10 = hospital.new Patient("p10", 3, true);
 		Patient p11 = hospital.new Patient("p11", 0, false);
 		Patient p12 = hospital.new Patient("p12", 1, true);
 		Patient p13 = hospital.new Patient("p13", 1, true);
@@ -34,6 +34,8 @@ public class ProjectTest {
 		hospital.signInPatientToDepartment(p11, "Neurology");
 		hospital.signInPatientToDepartment(p12, "Neurology");
 		hospital.signInPatientToDepartment(p13, "Neurology");
+		System.out.println(hospital);
+		hospital.signOutPatient("p5");
 		System.out.println(hospital);
 		System.out.println(hospital.departmentMap.show());
 		
