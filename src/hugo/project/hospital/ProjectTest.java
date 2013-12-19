@@ -47,6 +47,9 @@ public class ProjectTest {
 		hospital.printRouteFromToVia("Neurology", "Physiotherapy", "Radiology");
 		hospital.printRouteFromToVia("Neurology", "Physiotherapy", "Radiotherapy");
 		
+		
+		System.out.println(hospital.closestDepartmentToWithDevice("Radiology", "needle"));
+		
 //		EdgeGraph<Patient> graph = new EdgeGraph<Hospital.Patient>();
 //		graph.addNode(p1);
 //		graph.addNode(p2);

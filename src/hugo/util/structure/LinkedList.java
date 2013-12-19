@@ -102,13 +102,13 @@ public class LinkedList<E extends Comparable> implements Iterable<E>{
 		}
 	}
 
-	public boolean contains(Comparable target) {
-		for (int i = 0; i < size(); i++) {
-			if (get(i).equals(target)) {
-				return true;
-			}
+	public E contains(Comparable target) {
+		ListElement element = head;
+		while(element!=null) {
+			if(element.first().equals(target)) return element.first();
+			element = element.rest();
 		}
-		return false;
+		return null;
 	}
 
 	public E getFirst() {

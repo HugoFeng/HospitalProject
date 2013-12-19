@@ -204,7 +204,7 @@ public class Hospital {
 			}
 			
 			public boolean hasPatient(Patient p) {
-				return patients.contains(p);
+				return patients.contains(p) != null;
 			}
 			
 			public void addPatient(Patient p) {
@@ -242,6 +242,7 @@ public class Hospital {
 		protected WaitingRoom waitingRoom;
 		protected DoubleLinkedList<Ward> wardsForSingle;
 		protected DoubleLinkedList<Ward> wardsForMulti;
+		protected LinkedList<Device> deviceList;
 		
 		public boolean isForMultiFull() {
 			for (Ward room : wardsForMulti) {
@@ -325,6 +326,31 @@ public class Hospital {
 		public void signOutPatient(Patient p) {
 			signOutPatient(reception.getPatientInfo(p));
 		}
+		
+		public Device hasDevice(String type) {
+			Device targetDevice = deviceFactory(type, 0);
+			for (Device device : deviceList) {
+				if(device.equals(targetDevice) && device.getAmount()>0) return device;
+			}
+			return null;
+		}
+		
+		protected Device deviceFactory(String type, int initialAmount) {
+			if(type.equals("needle")) return new NeedleDevice(initialAmount);
+			if(type.equals("stethoscope")) return new StethoscopeDevice(initialAmount);
+			return null;
+		}
+		
+		public void addDevice(String type, int addAmount) {
+			Device newDevice = hasDevice(type);
+			if(newDevice != null) newDevice.addAmount(addAmount);
+			else deviceList.addFirst(deviceFactory(type, addAmount));
+		}
+		
+		public void removeDevice(String type) {
+			deviceList.remove(deviceFactory(type, 0));
+		}
+		
 
 		public int compareTo(Department dep) {
 			return this.name.compareTo(dep.name);
@@ -336,13 +362,19 @@ public class Hospital {
 		
 		public String info() {
 			String roomInfoListString = "";
+			String deviceInfoString = "  Device: [ ";
 			for (Ward room : wardsForSingle) {
 				roomInfoListString += room.info();
 			}
 			for (Ward room : wardsForMulti) {
 				roomInfoListString += room.info();
 			}
+			for (Device device : deviceList) {
+				deviceInfoString += device.getType() + "(" + device.getAmount() + ") ";
+			}
+			deviceInfoString += "]";
 			return this.toString() +":\n" 
+			+ deviceInfoString + "\n"
 			+ waitingRoom.info() + "\n"
 			+ roomInfoListString + "\n";
 		}
@@ -359,6 +391,7 @@ public class Hospital {
 			wardsForMulti.addLast(new Ward(109, 2));
 			wardsForSingle.addLast(new Ward(101, 1));
 			wardsForSingle.addLast(new Ward(102, 1));
+			deviceList = new LinkedList<Device>();
 
 		}
 	}
@@ -373,6 +406,7 @@ public class Hospital {
 			wardsForMulti.addLast(new Ward(110, 2));
 			wardsForSingle.addLast(new Ward(103, 1));
 			wardsForSingle.addLast(new Ward(104, 1));
+			deviceList = new LinkedList<Device>();
 
 		}
 	}
@@ -387,6 +421,7 @@ public class Hospital {
 			wardsForMulti.addLast(new Ward(106, 3));
 			wardsForMulti.addLast(new Ward(113, 2));
 			wardsForSingle.addLast(new Ward(105, 1));
+			deviceList = new LinkedList<Device>();
 		}
 	}
 	
@@ -400,6 +435,8 @@ public class Hospital {
 			wardsForMulti.addLast(new Ward(126, 3));
 			wardsForMulti.addLast(new Ward(120, 2));
 			wardsForSingle.addLast(new Ward(125, 1));
+			deviceList = new LinkedList<Device>();
+			addDevice("needle", 2);
 		}
 	}
 	
@@ -413,6 +450,9 @@ public class Hospital {
 			wardsForMulti.addLast(new Ward(117, 2));
 			wardsForSingle.addLast(new Ward(124, 1));
 			wardsForSingle.addLast(new Ward(123, 1));
+			deviceList = new LinkedList<Device>();
+			addDevice("needle", 1);
+			addDevice("stethoscope", 1);
 		}
 	}
 	
@@ -427,6 +467,7 @@ public class Hospital {
 			wardsForMulti.addLast(new Ward(114, 2));
 			wardsForSingle.addLast(new Ward(122, 1));
 			wardsForSingle.addLast(new Ward(121, 1));
+			deviceList = new LinkedList<Device>();
 
 		}
 	}
@@ -557,6 +598,13 @@ public class Hospital {
 		}
 	}
 	
+	public String closestDepartmentToWithDevice(String dep, String device) {
+		Department fromDepartment = getDepartmentByName(dep);
+		for (Department department : departmentMap.bfsIteratFrom(fromDepartment)) {
+			if(department.hasDevice(device) != null) return department.name;
+		}
+		return null;
+	}
 	
 	public String showRegister() {
 		return reception.show();

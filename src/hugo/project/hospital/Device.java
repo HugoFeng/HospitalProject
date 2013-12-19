@@ -1,6 +1,6 @@
 package hugo.project.hospital;
 
-public abstract class Device {
+public abstract class Device implements Comparable<Device>{
 	private String type;
 	private int amount;
 	
@@ -18,15 +18,23 @@ public abstract class Device {
 	}
 	
 	public String toString() {
-		return type;
+		return getType();
 	}
 	
 	public String getType() {
-		return toString();
+		return type;
 	}
 	
 	public int getAmount() {
 		return amount;
+	}
+	
+	public boolean equals(Device device) {
+		return getType().equals(device.getType());
+	}
+	
+	public int compareTo(Device device) {
+		return getType().compareTo(device.getType());
 	}
 	
 }
