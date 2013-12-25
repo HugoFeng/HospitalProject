@@ -1,3 +1,6 @@
+/* @author: Xuyang Feng
+ * @email: hugo.fxy@gmail.com
+ */
 package hugo.util.structure;
 
 import java.util.Iterator;
