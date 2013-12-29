@@ -39,6 +39,7 @@ public class ProjectTest {
 		hospital.signOutPatient("p5");
 		System.out.println(hospital);
 		System.out.println(hospital.departmentMap.show());
+//		System.out.println(hospital);
 		
 		hospital.printRouteFromTo("Neurology", "Radiotherapy");
 		hospital.printRouteFromTo("Neurology", "Oncology");

@@ -2,6 +2,7 @@ package hugo.project.hospital;
 
 import hugo.project.hospital.Hospital.Department.Room;
 import hugo.project.hospital.Hospital.Reception.PatientInfo;
+import hugo.util.structure.BinaryTree;
 import hugo.util.structure.DoubleLinkedList;
 import hugo.util.structure.EdgeGraph;
 import hugo.util.structure.LinkedList;
@@ -78,14 +79,15 @@ public class Hospital {
 
 		}
 		
-		protected LinkedList<PatientInfo> register;
+//		protected LinkedList<PatientInfo> register;
+		protected BinaryTree<PatientInfo> register;
 		
 		public Reception(){
-			register = new LinkedList<PatientInfo>();
+			register = new BinaryTree<PatientInfo>();
 		}
 
 		public PatientInfo getPatientInfo(String name) {
-			for (PatientInfo info : register) {
+			for (PatientInfo info : register.BfsTraversalIterable()) {
 				if(info.getName().equals(name)) return info;
 			}
 			return null;
@@ -96,7 +98,7 @@ public class Hospital {
 		}
 		
 		public void addPatientInfo(Patient p, Department dep, Room room) {
-			register.addFirst(new PatientInfo(p, dep, room));
+			register.insert(new PatientInfo(p, dep, room));
 		}
 		
 		public void removePatientInfo(PatientInfo info) {
@@ -113,7 +115,7 @@ public class Hospital {
 
 		public String show() {
 			String output = "";
-			for (PatientInfo info : register) {
+			for (PatientInfo info : register.BfsTraversalIterable()) {
 				output += info.getName() + ":\t"
 						+ info.getDepartment() + ",\t"
 						+ info.getRoom() +"\n";;
