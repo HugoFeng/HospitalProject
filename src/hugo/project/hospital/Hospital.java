@@ -1,9 +1,13 @@
+/**
+ * @author Xuyang Feng
+ * @email hugo.fxy@gmail.com
+ */
+
 package hugo.project.hospital;
 
 import hugo.project.hospital.Hospital.Department.Room;
 import hugo.project.hospital.Hospital.Reception.PatientInfo;
 import hugo.util.structure.BinaryTree;
-import hugo.util.structure.DoubleLinkedList;
 import hugo.util.structure.EdgeGraph;
 import hugo.util.structure.LinkedList;
 import hugo.util.structure.PriorityQueue;
@@ -79,7 +83,6 @@ public class Hospital {
 
 		}
 		
-//		protected LinkedList<PatientInfo> register;
 		protected BinaryTree<PatientInfo> register;
 		
 		public Reception(){
@@ -115,12 +118,16 @@ public class Hospital {
 
 		public String show() {
 			String output = "";
-			for (PatientInfo info : register.BfsTraversalIterable()) {
+			for (PatientInfo info : register.DfsTraversalIterable()) {
 				output += info.getName() + ":\t"
-						+ info.getDepartment() + ",\t"
-						+ info.getRoom() +"\n";;
+						+ info.getDepartment().getName() + ",\t"
+						+ info.getRoom().getName() +"\n";;
 			}
 			return output;
+		}
+		
+		public String toString() {
+			return show();
 		}
 		
 	}
@@ -132,7 +139,11 @@ public class Hospital {
 				return roomType;
 			}
 			
+			public abstract String getName();
+			
 			public abstract void removePatient(Patient p);
+			
+			public abstract String toString();
 		}
 
 		protected class WaitingRoom extends Room{
@@ -161,7 +172,7 @@ public class Hospital {
 				return waitingList.size();
 			}
 			
-			public String toString() {
+			public String getName() {
 				return name;
 			}
 			
@@ -171,7 +182,7 @@ public class Hospital {
 					patientListString += patient.toString() + " << ";
 				}
 				return "  -> "
-						+this.toString()
+						+this.getName()
 						+" (" + numberOfPeopleWaiting() + ") "
 						+"[ "
 						+patientListString
@@ -181,6 +192,10 @@ public class Hospital {
 			@Override
 			public void removePatient(Patient p) {
 				waitingList.remove(p);
+			}
+			
+			public String toString() {
+				return info();
 			}
 			
 		}
@@ -228,15 +243,19 @@ public class Hospital {
 					patientListString += patient.toString() + " ";
 				}
 				return "  -> "
-						+this.toString()
+						+this.getName()
 						+" (" + patients.size() +"/" + capacity + ") "
 						+"[ "
 						+patientListString
 						+" ]\n";
 			}
 			
-			public String toString() {
+			public String getName() {
 				return "Room " + number;
+			}
+			
+			public String toString() {
+				return info();
 			}
 		}
 		
@@ -296,7 +315,7 @@ public class Hospital {
 				}
 				// If this patient don't care
 				if (!patient.wantsSingleRoom && !isFull()) {
-					// First find a ward for multi
+					// First find a ward for multiple patients
 					for (Ward multiWard : wardsForMulti) {
 						if (!multiWard.isFull()) {
 							multiWard.addPatient(patient);
@@ -359,25 +378,29 @@ public class Hospital {
 		}
 		
 		public String toString() {
-			return name;
+			return info();		
 		}
 		
+		public String getName() {
+			return name;
+		}
+
 		public String info() {
 			String roomInfoListString = "";
 			String deviceInfoString = "  Device: [ ";
 			for (Ward room : wardsForSingle) {
-				roomInfoListString += room.info();
+				roomInfoListString += room.toString();
 			}
 			for (Ward room : wardsForMulti) {
-				roomInfoListString += room.info();
+				roomInfoListString += room.toString();
 			}
 			for (Device device : deviceList) {
 				deviceInfoString += device.getType() + "(" + device.getAmount() + ") ";
 			}
 			deviceInfoString += "]";
-			return this.toString() +":\n" 
+			return this.getName() +":\n" 
 			+ deviceInfoString + "\n"
-			+ waitingRoom.info() + "\n"
+			+ waitingRoom.toString() + "\n"
 			+ roomInfoListString + "\n";
 		}
 	}
@@ -463,8 +486,7 @@ public class Hospital {
 			name = "Physiotherapy";
 			waitingRoom = new WaitingRoom("WR " + name);
 			wardsForMulti = new LinkedList<Ward>();
-			wardsForSingle = new 
-					LinkedList<Ward>();
+			wardsForSingle = new LinkedList<Ward>();
 			wardsForMulti.addLast(new Ward(116, 2));
 			wardsForMulti.addLast(new Ward(115, 2));
 			wardsForMulti.addLast(new Ward(114, 2));
@@ -510,7 +532,7 @@ public class Hospital {
 	}
 	public Department getDepartmentByName(String depName) {
 		for (Department department : departmentList) {
-			if(department.toString().equals(depName)) return department;
+			if(department.getName().equals(depName)) return department;
 		}
 		return null;
 	}
@@ -553,18 +575,18 @@ public class Hospital {
 			String outputString = "Path from " + fromDepartment + " to " + toDepartment + ":\n"
 					+ "\t" + fromDepartment;
 			for (Department department : path) {
-				outputString += " >> " + department.toString();
+				outputString += " >> " + department.getName();
 			}
 			System.out.println(outputString);
 		}
 	}
 	
-	public void printRouteFromToAvoiding(
-			String fromDepartment, String toDepartment, String avoidDepartment) {
+	public void printRouteFromToAvoiding(String fromDepartment, String toDepartment, String avoidDepartment) {
 		LinkedList<Department> path = departmentMap.findPathAvoiding(
 				getDepartmentByName(fromDepartment), 
 				getDepartmentByName(toDepartment),
 				getDepartmentByName(avoidDepartment)); 
+
 		if (path == null) {
 			System.out.println("Route from " + fromDepartment 
 					+ " to " + toDepartment 
@@ -577,7 +599,7 @@ public class Hospital {
 					+ " avoiding " + avoidDepartment + ":\n"
 					+ "\t" + fromDepartment;
 			for (Department department : path) {
-				outputString += " >> " + department.toString();
+				outputString += " >> " + department.getName();
 			}
 			System.out.println(outputString);
 		}
@@ -601,7 +623,7 @@ public class Hospital {
 					+ " via " + viaDepartment + ":\n"
 					+ "\t" + fromDepartment;
 			for (Department department : path) {
-				outputString += " >> " + department.toString();
+				outputString += " >> " + department.getName();
 			}
 			System.out.println(outputString);
 		}
@@ -616,16 +638,17 @@ public class Hospital {
 	}
 	
 	public String showRegister() {
-		return reception.show();
+		return reception.toString();
 	}
 	
 	public String toString() {
 		String output = "";
 		output += "\n******************* PATIENTS ********************\n";
-		output += reception.show();
+		output += reception.toString();
+
 		output += "\n****************** DEPARTMENTS ******************\n";
 		for (Department department : departmentList) {
-			output += department.info() + "\n";
+			output += department.toString() + "\n";
 		}
 		return output;
 	}

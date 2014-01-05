@@ -91,6 +91,4 @@ Here is a hand typed code structure of this hospital. Some less important method
 * All kinds of device classes and hospital class are in seperate source files, because the details of devices are made by the manufactures, which have nothing to do with the hospital. 
 * The deviceFactory method is written in Hospital class instead of Device class. Because making a new kind of device class shouldn't modify the original Device class, instead, the Hospital is clearly acknowledged when importing new device, so I think putting the deviceFactory in Hospital is the best choice.
 
-## Time complexity of operations
-
 

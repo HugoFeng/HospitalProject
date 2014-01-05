@@ -1,3 +1,8 @@
+/**
+ * @author Xuyang Feng
+ * @email hugo.fxy@gmail.com
+ */
+
 package hugo.util.structure;
 
 import java.util.Iterator;
@@ -151,6 +156,37 @@ public class BinaryTree<E extends Comparable<E>> {
 						TreeNode<E> currenTreeNode = toDoQueue.pop();
 						if(currenTreeNode.getLeftTree() != null) toDoQueue.push(currenTreeNode.getLeftTree());
 						if(currenTreeNode.getRightTree() != null) toDoQueue.push(currenTreeNode.getRightTree());
+						return currenTreeNode.value;
+					}
+
+					@Override
+					public void remove() {
+						
+					}
+				};
+			}
+		};
+	}
+	
+	public Iterable<E> DfsTraversalIterable() {
+		return new Iterable<E>() {
+			@Override
+			public Iterator<E> iterator() {
+				return new Iterator<E>() {
+					Stack<TreeNode<E>> toDoStack = new Stack<TreeNode<E>>(){{
+						push(rootTreeNode);
+					}};
+					
+					@Override
+					public boolean hasNext() {
+						return !toDoStack.empty();
+					}
+
+					@Override
+					public E next() {
+						TreeNode<E> currenTreeNode = toDoStack.pop();
+						if(currenTreeNode.getRightTree() != null) toDoStack.push(currenTreeNode.getRightTree());
+						if(currenTreeNode.getLeftTree() != null) toDoStack.push(currenTreeNode.getLeftTree());
 						return currenTreeNode.value;
 					}
 

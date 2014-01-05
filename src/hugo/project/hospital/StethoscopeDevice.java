@@ -1,3 +1,8 @@
+/**
+ * @author Xuyang Feng
+ * @email hugo.fxy@gmail.com
+ */
+
 package hugo.project.hospital;
 
 public class StethoscopeDevice extends Device {

@@ -1,12 +1,17 @@
+/**
+ * @author Xuyang Feng
+ * @email hugo.fxy@gmail.com
+ */
+
 package hugo.project.hospital;
 
 import hugo.project.hospital.Hospital.Patient;
-import hugo.util.structure.*;
 
 public class ProjectTest {
 
 	public static void main(String[] args) {
 		Hospital hospital = new Hospital();
+
 		Patient p1 = hospital.new Patient("p1", 1, false);
 		Patient p2 = hospital.new Patient("p2", 2, false);
 		Patient p3 = hospital.new Patient("p3", 1, true);
@@ -35,16 +40,19 @@ public class ProjectTest {
 		hospital.signInPatientToDepartment(p11, "Neurology");
 		hospital.signInPatientToDepartment(p12, "Neurology");
 		hospital.signInPatientToDepartment(p13, "Neurology");
+
 		System.out.println(hospital);
 		hospital.signOutPatient("p5");
+
 		System.out.println(hospital);
-		System.out.println(hospital.departmentMap.show());
-//		System.out.println(hospital);
+//		System.out.println(hospital.departmentMap.show()); // Show edges in department map
 		
 		hospital.printRouteFromTo("Neurology", "Radiotherapy");
 		hospital.printRouteFromTo("Neurology", "Oncology");
+
 		hospital.printRouteFromToAvoiding("Neurology", "Radiotherapy", "Oncology");
 		hospital.printRouteFromToAvoiding("Neurology", "Radiotherapy", "Cardiology");
+
 		hospital.printRouteFromToVia("Neurology", "Physiotherapy", "Radiology");
 		hospital.printRouteFromToVia("Neurology", "Physiotherapy", "Radiotherapy");
 		
@@ -52,31 +60,6 @@ public class ProjectTest {
 		System.out.println("Closest Department from Radiology with device needle is: "
 				+ hospital.closestDepartmentToWithDevice("Radiology", "needle"));
 		
-//		EdgeGraph<Patient> graph = new EdgeGraph<Hospital.Patient>();
-//		graph.addNode(p1);
-//		graph.addNode(p2);
-//		graph.addNode(p3);
-//		graph.addNode(p4);
-//		graph.addNode(p5);
-//		graph.addEdge(p1, p2);
-//		graph.addEdge(p1, p3);
-//		graph.addEdge(p2, p3);
-//		graph.addEdge(p2, p4);
-//		graph.addEdge(p3, p1);
-//		graph.addEdge(p4, p5);
-//		System.out.println(graph.show());
-////		LinkedList<Patient> path = graph.findPath(p1, p4);
-////		for (Patient patient : path) {
-////			System.out.println(patient.toString());
-////		}
-//
-//		for (Patient patient : graph.bfsIteratFrom(p1)) {
-//			System.out.println(patient);
-//		}
-//		System.out.println();
-//		for (Patient patient : graph.dfsIteratFrom(p1)) {
-//			System.out.println(patient);
-//		}
 	}
 
 }
