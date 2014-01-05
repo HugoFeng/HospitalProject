@@ -242,8 +242,8 @@ public class Hospital {
 		
 		protected String name;
 		protected WaitingRoom waitingRoom;
-		protected DoubleLinkedList<Ward> wardsForSingle;
-		protected DoubleLinkedList<Ward> wardsForMulti;
+		protected LinkedList<Ward> wardsForSingle;
+		protected LinkedList<Ward> wardsForMulti;
 		protected LinkedList<Device> deviceList;
 		
 		public boolean isForMultiFull() {
@@ -337,12 +337,6 @@ public class Hospital {
 			return null;
 		}
 		
-		protected Device deviceFactory(String type, int initialAmount) {
-			if(type.equals("needle")) return new NeedleDevice(initialAmount);
-			if(type.equals("stethoscope")) return new StethoscopeDevice(initialAmount);
-			return null;
-		}
-		
 		public void addDevice(String type, int addAmount) {
 			Device newDevice = hasDevice(type);
 			if(newDevice != null) newDevice.addAmount(addAmount);
@@ -350,7 +344,13 @@ public class Hospital {
 		}
 		
 		public void removeDevice(String type) {
-			deviceList.remove(deviceFactory(type, 0));
+			Device targetDevice = hasDevice(type);
+			if(targetDevice != null) deviceList.remove(targetDevice);
+		}
+		
+		public void removeDevice(String type, int amount) {
+			Device targetDevice = hasDevice(type);
+			if(targetDevice != null) targetDevice.reduceAmount(amount);
 		}
 		
 
@@ -386,8 +386,8 @@ public class Hospital {
 		public NeurologyDepartment() {
 			name = "Neurology";
 			waitingRoom = new WaitingRoom("WR " + name);
-			wardsForMulti = new DoubleLinkedList<Ward>();
-			wardsForSingle = new DoubleLinkedList<Ward>();
+			wardsForMulti = new LinkedList<Ward>();
+			wardsForSingle = new LinkedList<Ward>();
 			wardsForMulti.addLast(new Ward(107, 2));
 			wardsForMulti.addLast(new Ward(108, 2));
 			wardsForMulti.addLast(new Ward(109, 2));
@@ -402,8 +402,8 @@ public class Hospital {
 		public CardiologyDepartment() {
 			name = "Cardiology";
 			waitingRoom = new WaitingRoom("WR " + name);
-			wardsForMulti = new DoubleLinkedList<Ward>();
-			wardsForSingle = new DoubleLinkedList<Ward>();
+			wardsForMulti = new LinkedList<Ward>();
+			wardsForSingle = new LinkedList<Ward>();
 			wardsForMulti.addLast(new Ward(111, 3));
 			wardsForMulti.addLast(new Ward(110, 2));
 			wardsForSingle.addLast(new Ward(103, 1));
@@ -417,8 +417,8 @@ public class Hospital {
 		public RadiologyDepartment() {
 			name = "Radiology";
 			waitingRoom = new WaitingRoom("WR " + name);
-			wardsForMulti = new DoubleLinkedList<Ward>();
-			wardsForSingle = new DoubleLinkedList<Ward>();
+			wardsForMulti = new LinkedList<Ward>();
+			wardsForSingle = new LinkedList<Ward>();
 			wardsForMulti.addLast(new Ward(112, 3));
 			wardsForMulti.addLast(new Ward(106, 3));
 			wardsForMulti.addLast(new Ward(113, 2));
@@ -431,8 +431,8 @@ public class Hospital {
 		public RadiotherapyDepartment() {
 			name = "Radiotherapy";
 			waitingRoom = new WaitingRoom("WR " + name);
-			wardsForMulti = new DoubleLinkedList<Ward>();
-			wardsForSingle = new DoubleLinkedList<Ward>();
+			wardsForMulti = new LinkedList<Ward>();
+			wardsForSingle = new LinkedList<Ward>();
 			wardsForMulti.addLast(new Ward(119, 3));
 			wardsForMulti.addLast(new Ward(126, 3));
 			wardsForMulti.addLast(new Ward(120, 2));
@@ -446,8 +446,8 @@ public class Hospital {
 		public OncologyDepartment() {
 			name = "Oncology";
 			waitingRoom = new WaitingRoom("WR " + name);
-			wardsForMulti = new DoubleLinkedList<Ward>();
-			wardsForSingle = new DoubleLinkedList<Ward>();
+			wardsForMulti = new LinkedList<Ward>();
+			wardsForSingle = new LinkedList<Ward>();
 			wardsForMulti.addLast(new Ward(118, 3));
 			wardsForMulti.addLast(new Ward(117, 2));
 			wardsForSingle.addLast(new Ward(124, 1));
@@ -462,8 +462,9 @@ public class Hospital {
 		public PhysiotherapyDepartment() {
 			name = "Physiotherapy";
 			waitingRoom = new WaitingRoom("WR " + name);
-			wardsForMulti = new DoubleLinkedList<Ward>();
-			wardsForSingle = new DoubleLinkedList<Ward>();
+			wardsForMulti = new LinkedList<Ward>();
+			wardsForSingle = new 
+					LinkedList<Ward>();
 			wardsForMulti.addLast(new Ward(116, 2));
 			wardsForMulti.addLast(new Ward(115, 2));
 			wardsForMulti.addLast(new Ward(114, 2));
@@ -511,6 +512,12 @@ public class Hospital {
 		for (Department department : departmentList) {
 			if(department.toString().equals(depName)) return department;
 		}
+		return null;
+	}
+	
+	protected Device deviceFactory(String type, int initialAmount) {
+		if(type.equals("needle")) return new NeedleDevice(initialAmount);
+		if(type.equals("stethoscope")) return new StethoscopeDevice(initialAmount);
 		return null;
 	}
 	
